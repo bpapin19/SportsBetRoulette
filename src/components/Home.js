@@ -3,6 +3,7 @@ import {Form, Button, Card, Container, Dropdown} from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery'
 import './Home.css';
+import moment from 'moment';
 require('dotenv').config();
 
 export default function Home() {
@@ -11,35 +12,67 @@ export default function Home() {
   const amountRef = useRef();
 
   // Use State
-  const [sport, setSport] = useState("basketball_nba");
+  const [sport, setSport] = useState("");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(-1);
   const [bookArray, setBookArray] = useState([]);
+  const [gameArrayDropdown, setGameArrayDropdown] = useState([]);
   const [game, setGame] = useState("");
   const [book, setBook] = useState({index:0, title: "Book"});
+  const [gameItem, setGameItem] = useState({index:-1, title: "Game"});
+  const [namesList, setNamesList] = useState({});
   const [market, setMarket] = useState("");
   const [outcome, setOutcome] = useState("");
   const [moneyline, setMoneyline] = useState("");
   const [spread, setSpread] = useState("");
   const [totals, setTotals] = useState("");
+  const [amount, setAmount] = useState("");
 
   var baseUrl = "https://api.the-odds-api.com";
 
   var marketArray = [];
 
-  const NFL_Teams = [{full:"Arizona Cardinals", abbr:"ARI"}, {full:"Atlanta Falcons", abbr:"ATL"}, {full:"Baltimore Ravens", abbr:"BAL"},
-                    {full:"Buffalo Bills", abbr:"BUF"}, {full:"Carolina Panthers", abbr:"CAR"}, {full:"Dallas Cowboys", abbr:"DAL"},
-                    {full:"Cincinnati Bengals", abbr:"CIN"}, {full:"Cleveland Browns", abbr:"CLE"}, {full:"Chicago Bears", abbr:"CHI"},
-                    {full:"Denver Broncos", abbr:"DEN"}, {full:"Detroit Lions", abbr:"DET"}, {full:"Green Bay Packers", abbr:"GB"},
-                    {full:"Houston Texans", abbr:"HOU"}, {full:"Indianapolis Colts", abbr:"IND"}, {full:"Jacksonville Jaguars", abbr:"JAX"},
-                    {full:"Kansas City Chiefs", abbr:"KC"}, {full:"Miami Dolphins", abbr:"MIA"}, {full:"Minnesota Vikings", abbr:"MIN"},
-                    {full:"New England Patriots", abbr:"NE"}, {full:"New Orleans Saints", abbr:"NO"}, {full:"NY Giants", abbr:"NYG"},
-                    {full:"NY Jets", abbr: "NYJ"}, {full:"Las Vegas Raiders", abbr:"LV"}, {full:"Philadelphia Eagles", abbr:"PHI"},
-                    {full:"Pittsburgh Steelers", abbr:"PIT"}, {full:"Los Angeles Chargers", abbr:"LAC"}, {full:"San Francisco 49ers", abbr:"SF"},
-                    {full:"Seattle Seahawks", abbr:"SEA"}, {full:"Los Angeles Rams", abbr:"LAR"}, {full:"Tampa Bay Buccaneers", abbr:"TB"},
-                    {full:"Tennessee Titans", abbr:"TEN"}, {full:"Washington Football Team", abbr:"WAS"}
-                  ];
+  const NFL_Teams = {"Arizona Cardinals":"ARI", "Atlanta Falcons":"ATL", "Baltimore Ravens":"BAL",
+                    "Buffalo Bills":"BUF", "Carolina Panthers":"CAR", "Dallas Cowboys":"DAL",
+                    "Cincinnati Bengals":"CIN", "Cleveland Browns":"CLE", "Chicago Bears":"CHI",
+                    "Denver Broncos":"DEN", "Detroit Lions":"DET", "Green Bay Packers":"GB",
+                    "Houston Texans":"HOU", "Indianapolis Colts":"IND", "Jacksonville Jaguars":"JAX",
+                    "Kansas City Chiefs":"KC", "Miami Dolphins":"MIA", "Minnesota Vikings":"MIN",
+                    "New England Patriots":"NE", "New Orleans Saints":"NO", "New York Giants":"NYG",
+                    "New York Jets": "NYJ", "Las Vegas Raiders":"LV", "Philadelphia Eagles":"PHI",
+                    "Pittsburgh Steelers":"PIT", "Los Angeles Chargers":"LAC", "San Francisco 49ers":"SF",
+                    "Seattle Seahawks":"SEA", "Los Angeles Rams":"LAR", "Tampa Bay Buccaneers":"TB",
+                    "Tennessee Titans":"TEN", "Washington Football Team":"WAS"
+                    };
+  
+  const MLB_Teams = {"Arizona Diamondbacks": "ARI",	"Atlanta Braves":	"ATL", "Baltimore Orioles": "BAL",
+                    "Boston Red Sox":	"BOS", "Chicago White Sox": "CWS", "Chicago Cubs":	"CHC",
+                    "Cincinnati Reds":	"CIN", "Cleveland Indians": "CLE", "Colorado Rockies":	"COL",
+                    "Detroit Tigers":	"DET", "Houston Astros":	"HOU", "Kansas City Royals":	"KC",
+                    "Los Angeles Angels":	"ANA", "Los Angeles Dodgers": "LAD", "Miami Marlins": "MIA",
+                    "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
+                    "New York Yankees":	"NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",	
+                    "Pittsburgh Pirates":	"PIT", "San Diego Padres":	"SD", "San Francisco Giants":	"SF",
+                    "Seattle Mariners":	"SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays":	"TB",
+                    "Texas Rangers": "TEX", "Toronto Blue Jays": "TOR", "Washington Nationals":	"WAS"
+                    }
+
+  const NBA_Teams = {"Boston Celtics": "BOS", "Brooklyn Nets": "BKN", "New York Knicks": "NY",
+                    "Philadelphia 76ers": "PHI", "Toronto Raptors": "TOR", "Golden State Warriors": "GS",    
+                    "Los Angeles Clippers": "LAC", "Los Angeles Lakers": "LAL", "Phoenix Suns": "PHX",
+                    "Sacramento Kings": "SAC", "Chicago Bulls": "CHI", "Cleveland Cavaliers": "CLE",
+                    "Detroit Pistons": "DET", "Indiana Pacers": "IND", "Milwaukee Bucks": "MIL",
+                    "Dallas Mavericks": "DAL", "Houston Rockets": "HOU", "Memphis Grizzlies": "MEM",
+                    "New Orleans Pelicans": "NO", "San Antonio Spurs": "SA", "Atlanta Hawks": "ATL",
+                    "Charlotte Hornets": "CHA", "Miami Heat": "MIA", "Orlando Magic": "ORL",
+                    "Washington Wizards": "WSH", "Denver Nuggets": "DEN", "Minnesota Timberwolves": "MIN",
+                    "Oklahoma City Thunder": "OKC", "Portland Trail Blazers": "POR", "Utah Jazz": "UTA"
+                  }
+          
+  const Market_Names = {"h2h": "Moneyline", "spreads": "Spread", "totals": "Total"};
+
+  const Sport_Names = {"americanfootball_nfl": "Football - NFL", "baseball_mlb": "Baseball - MLB", "basketball_nba": "Basketball - NBA"}
 
   function buildSlotItem (text) {
     return $('<div>').addClass('slottt-machine-recipe__item')
@@ -73,7 +106,6 @@ function rotateContents ($container, n) {
   
 function animate(randNum) {
   var $wordbox = $('#wordbox .slottt-machine-recipe__items_container');
-  console.log(randNum);
   var wordIndex = randNum;
   $wordbox.animate({top: -wordIndex*150}, 500, 'swing', function () {
     rotateContents($wordbox, wordIndex);
@@ -124,6 +156,7 @@ function getMarkets() {
           removeElementsByClass('slottt-machine-recipe__item');
         }
         setLoading(1);
+        setAmount(amountRef.current.value);
         axios({
           method: 'get',
           url: baseUrl + `/v4/sports/${sport}/odds/?apiKey=${process.env.REACT_APP_ODDS_API_KEY}&regions=us&markets=${getMarkets().toString()}&oddsFormat=american`,
@@ -147,19 +180,28 @@ function getMarkets() {
               return `${outcome.name}`;
             });
 
-            spin(gameArray, game_randNum);
-            spin(marketArray, market_randNum);
-            spin(outcomeArray, outcome_randNum);
-
-            setGame(res.data[game_randNum]);
-            setMarket(res.data[game_randNum].bookmakers[book.index].markets[market_randNum]);
-            setOutcome(res.data[game_randNum].bookmakers[book.index].markets[market_randNum].outcomes[outcome_randNum]);
+            // spin(marketArray, market_randNum);
+            // spin(outcomeArray, outcome_randNum);
+            if (gameItem.index === -1){
+              setGame(res.data[game_randNum]);
+              spin(gameArray, game_randNum);
+              setMarket(res.data[game_randNum].bookmakers[book.index].markets[market_randNum]);
+              setOutcome(res.data[game_randNum].bookmakers[book.index].markets[market_randNum].outcomes[outcome_randNum]);
+            } else {
+              setGame(res.data[gameItem.index]);
+              spin(gameArray, gameItem.index);
+              setMarket(res.data[gameItem.index].bookmakers[book.index].markets[market_randNum]);
+              setOutcome(res.data[gameItem.index].bookmakers[book.index].markets[market_randNum].outcomes[outcome_randNum]);
+            }
         })
         .catch(function() {
           setError("Unable to generate bet");
         });
 
-        // Clear state after submit
+        // Reset state after submit
+        $('input[type=checkbox]').prop('checked',false);
+        setBook({index:0, title: "Book"});
+        setGameItem({index:-1, title: "Game"});
         setMoneyline("");
         setSpread("");
         setTotals("");
@@ -170,43 +212,52 @@ function getMarkets() {
     }
 
   const handleChange = e => {
+    var sport_radio = e.target.value;
     setSport(e.target.value);
+    if (e.target.value === "americanfootball_nfl") {
+      setNamesList(NFL_Teams);
+    } else if (e.target.value === "baseball_mlb") {
+      setNamesList(MLB_Teams);
+    } else if (e.target.value === "basketball_nba") {
+      setNamesList(NBA_Teams);
+    }
     axios({
       method: 'get',
-      url: baseUrl + `/v4/sports/${sport}/odds/?apiKey=${process.env.REACT_APP_ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals&oddsFormat=american`,
+      url: baseUrl + `/v4/sports/${sport_radio}/odds?regions=us&oddsFormat=american&apiKey=${process.env.REACT_APP_ODDS_API_KEY}`,
     })
     .then(res => {
       setBookArray(res.data[0].bookmakers);
-      console.log(bookArray);
+      setGameArrayDropdown(res.data);
     }).catch(function() {
       setError("Unable to generate books");
     });
   };
 
-  const handleMLSelect = e => {
-      if (e.target.checked) {
+  const handleMLSelect = e => {  
+      if ($('#moneyline').is(":checked")) {
         setMoneyline(e.target.value);
       } else {
         setMoneyline("");
       }   
-
-      console.log(moneyline)
   };
 
   const handleSpreadSelect = e => {
-    if (e.target.checked) {
-      setSpread(e.target.value);
-    } else {
-      setSpread("");
-    }   
+    if ($('#spread').is(":checked")) {
+        setSpread(e.target.value);
+        console.log("spread");
+      } else {
+        setSpread("");
+      } 
+    
   };
 
   const handleTotalSelect = e => {
-    if (e.target.checked) {
-      setTotals(e.target.value);
-    } else {
-      setTotals("");
-    }
+    if ($('#totals').is(":checked")) {
+        setTotals(e.target.value);
+        console.log("totals")
+      } else {
+        setTotals("");
+      } 
   };
 
   const borderStyles = {
@@ -217,7 +268,7 @@ function getMarkets() {
   return (
     <>
     <Container
-            className="d-flex justify-content-center"
+            className="d-flex justify-content-center container"
             style={{ minHeight: "100vh", paddingTop: "30px"}}
         >
         <div className="w-100" style={{ maxWidth: "400px" }}>
@@ -227,12 +278,14 @@ function getMarkets() {
           <div className="alert alert-danger">{error}</div> }
             <div style={ borderStyles }>
                 <Card.Body>
-                    <h2 className="text-center mb-4">Generate a Bet</h2>
+                    <h2 className="text-center heading">Sports Bet Roulette</h2>
+                    <div className="text-center mb-4 subheading">Randomly Generate a Bet</div>
+                    <hr/>
                     <Form onSubmit={handleSubmit}>
-                        <Form.Group id="name" className="input-icon">
+                        <Form.Group id="amount" className="input-icon">
                             <Form.Label>Amount</Form.Label>
                             <i>$</i>
-                            <Form.Control placeholder="0.00" ref={amountRef} />
+                            <Form.Control type="number" min="1" step="any" placeholder="0.00" ref={amountRef} required/>
                         </Form.Group>
                         <div className="row">
                           <div className="col">
@@ -244,6 +297,7 @@ function getMarkets() {
                                 value={'americanfootball_nfl'}
                                 label={'Football'}
                                 name={'sport'}
+                                className="checkbox"
                                 onChange={handleChange}
                                 required
                               />
@@ -253,6 +307,7 @@ function getMarkets() {
                                 value={'basketball_nba'}
                                 label={'Basketball'}
                                 name={'sport'}
+                                className="checkbox"
                                 onChange={handleChange}
                                 required
                               />
@@ -262,6 +317,7 @@ function getMarkets() {
                                 value={'baseball_mlb'}
                                 label={'Baseball'}
                                 name={'sport'}
+                                className="checkbox"
                                 onChange={handleChange}
                                 required
                               />
@@ -275,6 +331,7 @@ function getMarkets() {
                                   value={'h2h'}
                                   label={'Moneyline'}
                                   name={'moneyline'}
+                                  className="checkbox"
                                   onChange={handleMLSelect}
                                 />
                                 <Form.Check 
@@ -282,6 +339,7 @@ function getMarkets() {
                                   value={'spreads'}
                                   label={'Spread'}
                                   name={'spreads'}
+                                  className="checkbox"
                                   onChange={handleSpreadSelect}
                                 />
                                 <Form.Check 
@@ -289,6 +347,7 @@ function getMarkets() {
                                   value={'totals'}
                                   label={'Totals'}
                                   name={'totals'}
+                                  className="checkbox"
                                   onChange={handleTotalSelect}
                                 />
                             </Form.Group>
@@ -298,13 +357,13 @@ function getMarkets() {
                           {/* **************************** TEAM DROPDOWN *************************** */}
                           <div className="col">
                             <Dropdown>
-                              <Dropdown.Toggle id="dropdown-basic" style={{marginBottom: "20px"}}>
-                                Game
+                              <Dropdown.Toggle id="dropdown-basic" className="button btn-danger" style={{marginBottom: "20px"}}>
+                                {gameItem.title}
                               </Dropdown.Toggle>
                               <Dropdown.Menu style={{overflow: "auto", maxHeight: "200px"}}>
-                              <Dropdown.Item onClick={() => {setBook({index: 0, title: "Any"})}}>Any</Dropdown.Item>
-                                {NFL_Teams.map(team =>
-                                  <Dropdown.Item key={team.abbr} onClick={() => {setBook({index: bookArray.indexOf(team), title: team.title})}}>{team.abbr}</Dropdown.Item>
+                              <Dropdown.Item onClick={() => {setGameItem({index: -1, title: "Any"})}}>Any</Dropdown.Item>
+                                {gameArrayDropdown.map(gameEntry =>
+                                    <Dropdown.Item onClick={() => {setGameItem({index: gameArrayDropdown.indexOf(gameEntry), title: `${namesList[gameEntry.away_team]} @ ${namesList[gameEntry.home_team]}`})}}>{`${namesList[gameEntry.away_team]} @ ${namesList[gameEntry.home_team]}`}</Dropdown.Item>
                                 )}
                               </Dropdown.Menu>
                             </Dropdown> 
@@ -313,7 +372,7 @@ function getMarkets() {
                           {/* **************************** BOOK DROPDOWN *************************** */}
                           <div className="col">
                             <Dropdown>
-                              <Dropdown.Toggle id="dropdown-basic" style={{marginBottom: "20px"}}>
+                              <Dropdown.Toggle id="dropdown-basic" className="button btn-danger" style={{marginBottom: "20px"}}>
                                 {book.title}
                               </Dropdown.Toggle>
                               <Dropdown.Menu style={{overflow: "auto", maxHeight: "200px"}}>
@@ -325,7 +384,7 @@ function getMarkets() {
                             </Dropdown>
                           </div>
                         </div>
-                        <Button className="w-100" type="submit">Bet!</Button>
+                        <Button className="w-100 button" type="submit">Bet!</Button>
                     </Form>
                 </Card.Body>
             </div>
@@ -334,25 +393,45 @@ function getMarkets() {
               <div>Generating Bet...</div>
             </div>}
             {loading===0 && 
-            <div>
-              <div>{game.away_team} <span>at {game.home_team}</span></div>
-              <div>Market: {market.key}</div>
-              <div>Outcome: {outcome.name}<span>{outcome.point}</span><span>{outcome.price}</span></div>
-            </div>}
-            <div class="slottt-machine-recipe">
-              <div class="slottt-machine-recipe__mask" id="wordbox">
-                <div class="slottt-machine-recipe__items_container recipe_if" id="slot_items_list"></div>
+            <div className="bet-container">
+              <div>
+                <div>
+                  <div>Risk ${parseFloat(amount).toFixed(2)} / To Win ${outcome.price > 0 ? (outcome.price/100 * amount).toFixed(2) : ((100/Math.abs(outcome.price)) * amount).toFixed(2)} / Odds {outcome.price > 0 ? `+${outcome.price}` : outcome.price} </div>
+                </div>
+                <ul>
+                  <li>
+                    <div>
+                      <div>
+                        <hr/>
+                        <span className="market">{Market_Names[market.key]} - </span>
+                        <span className="market">{outcome.name} {(market.key === "spreads" && outcome.point > 0) ?  `+${outcome.point}` : outcome.point} ({outcome.price > 0 ? `+${outcome.price}` : outcome.price})</span>
+                        <div>{moment(game.commence_time).format("M/D/YY")}</div>
+                        <hr/>
+                      </div>
+                      <div>
+                        <span> </span>
+                        <div>{game.away_team} @ {game.home_team} </div>
+                        <span>{Sport_Names[sport]}</span> 
+                        <div>{moment(game.commence_time).format("MMM Do YYYY h:mm a")}</div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="slottt-machine-recipe">
-              <div class="slottt-machine-recipe__mask" id="wordbox">
-                <div class="slottt-machine-recipe__items_container recipe_if" id="slot_items_list"></div>
+            }
+            <div className="slottt-machine-recipe">
+              <div className="slottt-machine-recipe__mask" id="wordbox">
+                <div className="slottt-machine-recipe__items_container recipe_if" id="slot_items_list"></div>
               </div>
             </div>
-        </div>
-        
+            {/* <div className="slottt-machine-recipe">
+              <div className="slottt-machine-recipe__mask" id="wordbox">
+                <div className="slottt-machine-recipe__items_container recipe_if" id="slot_items_list"></div>
+              </div>
+            </div> */}
+    </div>
     </Container>
-    
     </>
   )
 }
