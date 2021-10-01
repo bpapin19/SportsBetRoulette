@@ -1,10 +1,11 @@
 .heading {
     font-family: "Poppins";
+    font-weight: 500;
     color: rgb(203, 0, 0);
 }
 
 .subheading {
-    font-size: "2px";
+    font-size: 20px;
     color: gray;
 }
 
@@ -55,39 +56,183 @@ input[type="checkbox"]:checked + label{
     font-weight: 300;
 }
 
-.slottt-machine-recipe {
+/* ********* SLOT MACHINE ANIMATION ******* */
+.slot-container {
+    border: 1px solid black;
+    border-radius: 20px;
+    box-shadow: 10px;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* ********** GAME ********* */
+.slottt-machine-recipe_game {
     margin: 0px auto;
     width: 700px;
     margin-top: 10px;
   }
   
-  .slottt-machine-recipe__mask {
-      width: 100%;
-      height: 30px;
-      overflow: hidden; 
-      position: relative;
-      display: inline-block;
-      margin-bottom: -40px;
-  }
-  
-  .slottt-machine-recipe__items_container {
-      position: absolute;
-  }
-  
-  .slottt-machine-recipe__item {
-      min-height: 30px;
-      max-height: 30px;
-      margin: 0px;
-      padding: 0px;
-      background-size: contain;
-      font-size: 20px;
-  }
-  
-  .input-icon {
+.slottt-machine-recipe__mask_game {
+    width: 100%;
+    height: 30px;
+    overflow: hidden; 
     position: relative;
+    display: inline-block;
+    margin-bottom: -40px;
+}
+
+.slottt-machine-recipe__items_container_game {
+    position: absolute;
+    text-align: center;
+}
+
+.slottt-machine-recipe__item_game {
+    min-height: 30px;
+    max-height: 30px;
+    margin: 0px;
+    padding: 0px;
+    background-size: contain;
+    font-size: 20px;
+}
+
+/* ********** MARKET ********* */
+.slottt-machine-recipe_market {
+    margin: 0px auto;
+    width: 700px;
+    margin-top: 10px;
   }
   
-  .input-icon > i {
+.slottt-machine-recipe__mask_market {
+    width: 100%;
+    height: 30px;
+    overflow: hidden; 
+    position: relative;
+    display: inline-block;
+    margin-bottom: -40px;
+}
+
+.slottt-machine-recipe__items_container_market {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.slottt-machine-recipe__item_market {
+    min-height: 30px;
+    max-height: 30px;
+    margin: 0px;
+    padding: 0px;
+    background-size: contain;
+    font-size: 20px;
+}
+
+/* ********** OUTCOME ********* */
+.slottt-machine-recipe_outcome {
+    margin: 0px auto;
+    margin-top: 10px;
+    max-width: 400px;
+  }
+  
+.slottt-machine-recipe__mask_outcome {
+    width: 100%;
+    height: 30px;
+    overflow: hidden; 
+    position: relative;
+    display: inline-block;
+    margin-bottom: -40px;
+}
+
+.slottt-machine-recipe__items_container_outcome {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+.slottt-machine-recipe__item_outcome {
+    min-height: 30px;
+    max-height: 30px;
+    margin: 0px;
+    padding: 0px;
+    background-size: contain;
+    font-size: 20px;
+}
+
+/* ****** FADE TRANSITION ********* */
+
+/********** FADE IN **********/
+.fade-in {
+    animation-name: fadein;
+    animation-duration: 1s;   
+    animation-timing-function: ease-in-out;
+    opacity: 1;
+    animation-delay: 2.8s;
+    animation-fill-mode: forwards;  
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/********** FADE OUT **********/
+.fade-out {
+    animation-name: fadeout;
+    animation-duration: 1s;   
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+    animation-delay: 6.8s;
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadeout {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadeout {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadeout {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon > i {
     position: absolute;
     display: block;
     transform: translate(0, 15%);
@@ -95,46 +240,64 @@ input[type="checkbox"]:checked + label{
     pointer-events: none;
     width: 25px;
     text-align: center;
-      font-style: normal;
-  }
+    font-style: normal;
+}
 
-  li {
-      list-style: none;
-  }
+li {
+    list-style: none;
+}
 
-  .market {
-      font-family: "Rubik";
-      font-weight: 500
-  }
+.market {
+    font-family: "Rubik";
+    font-weight: 500;
+}
 
-  .bet-container {
-      background-color: rgb(230, 230, 230);
-      align-items: center;
-      padding: "20px";
-      font-family: "Rubik";
-  }
-  
-  .input-icon > input {
+.wrapper {
+    position: relative;
+}
+
+.bet-container {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    width: 100%;
+    background-color: rgb(230, 230, 230);
+    font-family: "Rubik";
+    padding: 20px;
+    text-align: center;
+    margin: auto;
+    margin-top: 25px;
+    z-index: 10;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.visible {
+    opacity: 1;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+.input-icon > input {
     padding-left: 25px;
-      padding-right: 0;
-  }
-  
-  body {
-    font-family: Helvetica, Arial, sans serif;
-  }
-  
-  .recipe_if, .recipe_then {
-      font-weight: bold;
-      font-size: 120px;
-  }
-  
-  .tagline {
+    padding-right: 0;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.recipe_if, .recipe_then {
+    font-weight: bold;
+    font-size: 120px;
+}
+
+.tagline {
     font-weight: normal;
     font-size: 24px;
-  }
-  
-  a {
-   font-weight: bold;
-   text-decoration: none;
-   color: #33CCFF;
-  }
+}

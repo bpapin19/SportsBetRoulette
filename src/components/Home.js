@@ -13,6 +13,7 @@ export default function Home() {
 
   // Use State
   const [sport, setSport] = useState("");
+  const [sportDisplay, setSportDisplay] = useState("");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(-1);
@@ -74,49 +75,137 @@ export default function Home() {
 
   const Sport_Names = {"americanfootball_nfl": "Football - NFL", "baseball_mlb": "Baseball - MLB", "basketball_nba": "Basketball - NBA"}
 
-  function buildSlotItem (text) {
-    return $('<div>').addClass('slottt-machine-recipe__item')
-                     .text(text);
-}
+  let betContainerClassName = "bet-container fade-in";
 
-function buildSlotContents ($container, gameArray) {
-  var $items = gameArray.map(buildSlotItem);
+//******************** GAME SLOT ANIMATION ****************** */
+  function buildSlotItemGame (text) {
+      return $('<div>').addClass('slottt-machine-recipe__item_game').text(text);
+  }
+
+function buildSlotContentsGame ($container, itemArray) {
+  var $items = itemArray.map(buildSlotItemGame);
   $container.append($items);
 }
 
-function popPushNItems ($container, n) {
-    var $children = $container.find('.slottt-machine-recipe__item');
+function popPushNItemsGame ($container, n) {
+    var $children = $container.find('.slottt-machine-recipe__item_game');
     $children.slice(0, n).insertAfter($children.last());
 
     if (n === $children.length) {
-      popPushNItems($container, 1);
+      popPushNItemsGame($container, 1);
     }
 }
 
-// After the slide animation is complete, we want to pop some items off
-// the front of the container and push them onto the end. This is
-// so the animation can slide upward infinitely without adding
-// inifinte div elements inside the container.
-function rotateContents ($container, n) {
+function rotateContentsGame ($container, n) {
     setTimeout(function () {
-      popPushNItems($container, n);
+      popPushNItemsGame($container, n);
       $container.css({top: 0});
     }, 300);   
 }
   
-function animate(randNum) {
-  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container');
+function animateGame(randNum) {
+  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_game');
   var wordIndex = randNum;
   $wordbox.animate({top: -wordIndex*150}, 500, 'swing', function () {
-    rotateContents($wordbox, wordIndex);
+    rotateContentsGame($wordbox, wordIndex);
   });
 }
 
-function spin(itemArray, randNum) {
-  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container');
-  buildSlotContents($wordbox, itemArray);
-  
-  setInterval(animate(randNum), 2000);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+function spinGame(itemArray, randNum) {
+  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_game');
+  buildSlotContentsGame($wordbox, itemArray);
+  buildSlotContentsGame($wordbox, itemArray);
+  buildSlotContentsGame($wordbox, itemArray);
+  buildSlotContentsGame($wordbox, itemArray);
+  setInterval(animateGame(randNum), 2000);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+}
+
+//******************** MARKET SLOT ANIMATION ****************** */
+function buildSlotItemMarket (text) {
+  return $('<div>').addClass('slottt-machine-recipe__item_market').text(Market_Names[text]);
+}
+
+function buildSlotContentsMarket ($container, itemArray) {
+  var $items = itemArray.map(buildSlotItemMarket);
+  $container.append($items);
+  }
+
+function popPushNItemsMarket ($container, n) {
+  var $children = $container.find('.slottt-machine-recipe__item_market');
+  $children.slice(0, n).insertAfter($children.last());
+
+  if (n === $children.length) {
+    popPushNItemsMarket($container, 1);
+  }
+}
+
+function rotateContentsMarket ($container, n) {
+  setTimeout(function () {
+    popPushNItemsMarket($container, n);
+    $container.css({top: 0});
+  }, 300);
+}
+
+function animateMarket(randNum) {
+  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_market');
+  var wordIndex = randNum;
+  $wordbox.animate({top: -wordIndex*150}, 1500, 'swing', function () {
+    rotateContentsMarket($wordbox, wordIndex);
+  });
+}
+
+function spinMarket(itemArray, randNum) {
+  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_market');
+  buildSlotContentsMarket($wordbox, itemArray);
+  buildSlotContentsMarket($wordbox, itemArray);
+  buildSlotContentsMarket($wordbox, itemArray);
+  buildSlotContentsMarket($wordbox, itemArray);
+  setInterval(animateMarket(randNum), 2000);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+}
+
+//******************** OUTCOME SLOT ANIMATION ****************** */
+function buildSlotItemOutcome (text) {
+  return $('<div>').addClass('slottt-machine-recipe__item_outcome').text(text);
+}
+
+function buildSlotContentsOutcome ($container, itemArray) {
+  var $items = itemArray.map(buildSlotItemOutcome);
+  $container.append($items);
+}
+
+function popPushNItemsOutcome ($container, n) {
+  var $children = $container.find('.slottt-machine-recipe__item_outcome');
+  $children.slice(0, n).insertAfter($children.last());
+
+  if (n === $children.length) {
+    popPushNItemsOutcome($container, 1);
+  }
+}
+
+function rotateContentsOutcome ($container, n) {
+  setTimeout(function () {
+    popPushNItemsOutcome($container, n);
+    $container.css({top: 0});
+  }, 300);
+}
+
+function animateOutcome(randNum) {
+  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_outcome');
+  var wordIndex = randNum;
+  $wordbox.animate({top: -wordIndex*150}, 2000, 'swing', function () {
+    rotateContentsOutcome($wordbox, wordIndex);
+  });
+}
+
+function spinOutcome(itemArray, randNum) {
+  var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_outcome');
+  buildSlotContentsOutcome($wordbox, itemArray);
+  buildSlotContentsOutcome($wordbox, itemArray);
+  buildSlotContentsOutcome($wordbox, itemArray);
+  buildSlotContentsOutcome($wordbox, itemArray);
+  buildSlotContentsOutcome($wordbox, itemArray);
+  buildSlotContentsOutcome($wordbox, itemArray);
+  setInterval(animateOutcome(randNum), 200);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 }
 
 function removeElementsByClass(className){
@@ -145,24 +234,29 @@ function getMarkets() {
   async function handleSubmit(e) {
       e.preventDefault();
 
-      console.log(marketArray);
-
       var game_randNum;
       var market_randNum;
       var outcome_randNum;
 
       if (error === "") {
-        if (document.getElementsByClassName('slottt-machine-recipe__item').length !== 0) {
-          removeElementsByClass('slottt-machine-recipe__item');
+        if (document.getElementsByClassName('slottt-machine-recipe__item_game').length !== 0) {
+          removeElementsByClass('slottt-machine-recipe__item_game');
         }
+        if (document.getElementsByClassName('slottt-machine-recipe__item_market').length !== 0) {
+          removeElementsByClass('slottt-machine-recipe__item_market');
+        }
+        if (document.getElementsByClassName('slottt-machine-recipe__item_outcome').length !== 0) {
+          removeElementsByClass('slottt-machine-recipe__item_outcome');
+        }
+        
         setLoading(1);
         setAmount(amountRef.current.value);
+        setSportDisplay(sport);
         axios({
           method: 'get',
           url: baseUrl + `/v4/sports/${sport}/odds/?apiKey=${process.env.REACT_APP_ODDS_API_KEY}&regions=us&markets=${getMarkets().toString()}&oddsFormat=american`,
         })
         .then(res => {
-            console.log(res.data);
             game_randNum = (Math.floor(Math.random() * res.data.length));
             market_randNum = (Math.floor(Math.random() * res.data[game_randNum].bookmakers[book.index].markets.length));
             outcome_randNum = (Math.floor(Math.random() * res.data[game_randNum].bookmakers[book.index].markets[market_randNum].outcomes.length));
@@ -180,19 +274,25 @@ function getMarkets() {
               return `${outcome.name}`;
             });
 
-            // spin(marketArray, market_randNum);
-            // spin(outcomeArray, outcome_randNum);
             if (gameItem.index === -1){
               setGame(res.data[game_randNum]);
-              spin(gameArray, game_randNum);
+              spinGame(gameArray, game_randNum);
               setMarket(res.data[game_randNum].bookmakers[book.index].markets[market_randNum]);
               setOutcome(res.data[game_randNum].bookmakers[book.index].markets[market_randNum].outcomes[outcome_randNum]);
             } else {
               setGame(res.data[gameItem.index]);
-              spin(gameArray, gameItem.index);
+              spinGame(gameArray, gameItem.index);
               setMarket(res.data[gameItem.index].bookmakers[book.index].markets[market_randNum]);
               setOutcome(res.data[gameItem.index].bookmakers[book.index].markets[market_randNum].outcomes[outcome_randNum]);
+              outcomeArray = res.data[gameItem.index].bookmakers[book.index].markets[market_randNum].outcomes.map(function(outcome) {
+                return `${outcome.name}`;
+              });
             }
+            spinMarket(marketArray, market_randNum);
+            spinOutcome(outcomeArray, outcome_randNum);
+
+            // var d = document.getElementsByClassName("bet-container");
+            // setTimeout(d.classList.add("fade-in"), 2000);
         })
         .catch(function() {
           setError("Unable to generate bet");
@@ -244,17 +344,14 @@ function getMarkets() {
   const handleSpreadSelect = e => {
     if ($('#spread').is(":checked")) {
         setSpread(e.target.value);
-        console.log("spread");
       } else {
         setSpread("");
       } 
-    
   };
 
   const handleTotalSelect = e => {
     if ($('#totals').is(":checked")) {
         setTotals(e.target.value);
-        console.log("totals")
       } else {
         setTotals("");
       } 
@@ -392,44 +489,49 @@ function getMarkets() {
             <div>
               <div>Generating Bet...</div>
             </div>}
-            {loading===0 && 
-            <div className="bet-container">
-              <div>
+            <div className="wrapper">
+              <div className="slots-container fade-out visible">
+                <div className="slottt-machine-recipe_game">
+                  <div className="slottt-machine-recipe__mask_game  slot-container" id="wordbox">
+                    <div className="slottt-machine-recipe__items_container_game recipe_if" id="slot_items_list"></div>
+                  </div>
+                </div>
+                <div className="slottt-machine-recipe_market">
+                  <div className="slottt-machine-recipe__mask_market  slot-container" id="wordbox">
+                    <div className="slottt-machine-recipe__items_container_market recipe_if" id="slot_items_list"></div>
+                  </div>
+                </div>
+                <div className="slottt-machine-recipe_outcome">
+                  <div className="slottt-machine-recipe__mask_outcome  slot-container" id="wordbox">
+                    <div className="slottt-machine-recipe__items_container_outcome recipe_if" id="slot_items_list"></div>
+                  </div>
+                </div>
+              </div>
+              {loading===0 && 
+              <div id="bet-container" className="bet-container fade-in hidden">
                 <div>
                   <div>Risk ${parseFloat(amount).toFixed(2)} / To Win ${outcome.price > 0 ? (outcome.price/100 * amount).toFixed(2) : ((100/Math.abs(outcome.price)) * amount).toFixed(2)} / Odds {outcome.price > 0 ? `+${outcome.price}` : outcome.price} </div>
                 </div>
                 <ul>
                   <li>
                     <div>
-                      <div>
-                        <hr/>
-                        <span className="market">{Market_Names[market.key]} - </span>
-                        <span className="market">{outcome.name} {(market.key === "spreads" && outcome.point > 0) ?  `+${outcome.point}` : outcome.point} ({outcome.price > 0 ? `+${outcome.price}` : outcome.price})</span>
-                        <div>{moment(game.commence_time).format("M/D/YY")}</div>
-                        <hr/>
-                      </div>
-                      <div>
-                        <span> </span>
-                        <div>{game.away_team} @ {game.home_team} </div>
-                        <span>{Sport_Names[sport]}</span> 
-                        <div>{moment(game.commence_time).format("MMM Do YYYY h:mm a")}</div>
-                      </div>
+                      <hr/>
+                      <span className="market">{Market_Names[market.key]} - </span>
+                      <span className="market">{outcome.name} {(market.key === "spreads" && outcome.point > 0) ?  `+${outcome.point}` : outcome.point} ({outcome.price > 0 ? `+${outcome.price}` : outcome.price})</span>
+                      <div>{moment(game.commence_time).format("M/D/YY")}</div>
+                      <hr/>
+                    </div>
+                    <div>
+                      <span> </span>
+                      <div>{game.away_team} @ {game.home_team} </div>
+                      <span>{Sport_Names[sportDisplay]}</span> 
+                      <div>{moment(game.commence_time).format("MMM Do YYYY h:mm a")}</div>
                     </div>
                   </li>
                 </ul>
               </div>
+              }
             </div>
-            }
-            <div className="slottt-machine-recipe">
-              <div className="slottt-machine-recipe__mask" id="wordbox">
-                <div className="slottt-machine-recipe__items_container recipe_if" id="slot_items_list"></div>
-              </div>
-            </div>
-            {/* <div className="slottt-machine-recipe">
-              <div className="slottt-machine-recipe__mask" id="wordbox">
-                <div className="slottt-machine-recipe__items_container recipe_if" id="slot_items_list"></div>
-              </div>
-            </div> */}
     </div>
     </Container>
     </>
