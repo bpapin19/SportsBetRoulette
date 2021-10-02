@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/SportsBetRoulette/static/css/main.07b4912e.chunk.css",
+    "main.js": "/SportsBetRoulette/static/js/main.7147e6ea.chunk.js",
+    "main.js.map": "/SportsBetRoulette/static/js/main.7147e6ea.chunk.js.map",
+    "runtime-main.js": "/SportsBetRoulette/static/js/runtime-main.f012cbec.js",
+    "runtime-main.js.map": "/SportsBetRoulette/static/js/runtime-main.f012cbec.js.map",
+    "static/js/2.d849d27b.chunk.js": "/SportsBetRoulette/static/js/2.d849d27b.chunk.js",
+    "static/js/2.d849d27b.chunk.js.map": "/SportsBetRoulette/static/js/2.d849d27b.chunk.js.map",
+    "index.html": "/SportsBetRoulette/index.html",
+    "static/css/main.07b4912e.chunk.css.map": "/SportsBetRoulette/static/css/main.07b4912e.chunk.css.map",
+    "static/js/2.d849d27b.chunk.js.LICENSE.txt": "/SportsBetRoulette/static/js/2.d849d27b.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f012cbec.js",
+    "static/js/2.d849d27b.chunk.js",
+    "static/css/main.07b4912e.chunk.css",
+    "static/js/main.7147e6ea.chunk.js"
+  ]
+}
