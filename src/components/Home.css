@@ -10,7 +10,7 @@
 }
 
 .button {
-    background-color:rgb(203, 0, 0);
+    background-color:rgb(204, 0, 0);
     border-color: rgb(203, 0, 0);
 }
 
@@ -68,7 +68,6 @@ input[type="checkbox"]:checked + label{
 /* ********** GAME ********* */
 .slottt-machine-recipe_game {
     margin: 0px auto;
-    width: 700px;
     margin-top: 10px;
   }
   
@@ -98,7 +97,6 @@ input[type="checkbox"]:checked + label{
 /* ********** MARKET ********* */
 .slottt-machine-recipe_market {
     margin: 0px auto;
-    width: 700px;
     margin-top: 10px;
   }
   
@@ -132,7 +130,6 @@ input[type="checkbox"]:checked + label{
 .slottt-machine-recipe_outcome {
     margin: 0px auto;
     margin-top: 10px;
-    max-width: 400px;
   }
   
 .slottt-machine-recipe__mask_outcome {
@@ -199,10 +196,10 @@ input[type="checkbox"]:checked + label{
 /********** FADE OUT **********/
 .fade-out {
     animation-name: fadeout;
-    animation-duration: 1s;   
+    animation-duration: 2s;   
     animation-timing-function: ease-in-out;
     opacity: 0;
-    animation-delay: 6.8s;
+    animation-delay: 3.5s;
 }
 
 @keyframes fadeout {

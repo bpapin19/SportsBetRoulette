@@ -4,6 +4,7 @@ import axios from 'axios';
 import $ from 'jquery'
 import './Home.css';
 import moment from 'moment';
+import ProgressBar from "@ramonak/react-progress-bar";
 require('dotenv').config();
 
 export default function Home() {
@@ -29,6 +30,8 @@ export default function Home() {
   const [spread, setSpread] = useState("");
   const [totals, setTotals] = useState("");
   const [amount, setAmount] = useState("");
+  const [completed, setCompleted] = useState(0);
+  const [slotContainer_className, setSlotContainer_className] = useState("slots-container visible");
 
   var baseUrl = "https://api.the-odds-api.com";
 
@@ -75,11 +78,9 @@ export default function Home() {
 
   const Sport_Names = {"americanfootball_nfl": "Football - NFL", "baseball_mlb": "Baseball - MLB", "basketball_nba": "Basketball - NBA"}
 
-  let betContainerClassName = "bet-container fade-in";
-
 //******************** GAME SLOT ANIMATION ****************** */
   function buildSlotItemGame (text) {
-      return $('<div>').addClass('slottt-machine-recipe__item_game').text(text);
+    return $('<div>').addClass('slottt-machine-recipe__item_game').text(text);
   }
 
 function buildSlotContentsGame ($container, itemArray) {
@@ -149,7 +150,7 @@ function rotateContentsMarket ($container, n) {
 function animateMarket(randNum) {
   var $wordbox = $('#wordbox .slottt-machine-recipe__items_container_market');
   var wordIndex = randNum;
-  $wordbox.animate({top: -wordIndex*150}, 1500, 'swing', function () {
+  $wordbox.animate({top: -wordIndex*150}, 1000, 'swing', function () {
     rotateContentsMarket($wordbox, wordIndex);
   });
 }
@@ -160,7 +161,7 @@ function spinMarket(itemArray, randNum) {
   buildSlotContentsMarket($wordbox, itemArray);
   buildSlotContentsMarket($wordbox, itemArray);
   buildSlotContentsMarket($wordbox, itemArray);
-  setInterval(animateMarket(randNum), 2000);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+  setInterval(animateMarket(randNum), 1500);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 }
 
 //******************** OUTCOME SLOT ANIMATION ****************** */
@@ -205,7 +206,7 @@ function spinOutcome(itemArray, randNum) {
   buildSlotContentsOutcome($wordbox, itemArray);
   buildSlotContentsOutcome($wordbox, itemArray);
   buildSlotContentsOutcome($wordbox, itemArray);
-  setInterval(animateOutcome(randNum), 200);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+  setInterval(animateOutcome(randNum), 2000);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 }
 
 function removeElementsByClass(className){
@@ -215,6 +216,7 @@ function removeElementsByClass(className){
   }
 }
 
+// Get array of selected markets for API Call
 function getMarkets() {
   if (moneyline !== "") {
     marketArray.push(moneyline);
@@ -231,6 +233,7 @@ function getMarkets() {
   return marketArray;
 }
 
+// Handle Form Submit
   async function handleSubmit(e) {
       e.preventDefault();
 
@@ -239,6 +242,7 @@ function getMarkets() {
       var outcome_randNum;
 
       if (error === "") {
+        // Reset Slot Contents
         if (document.getElementsByClassName('slottt-machine-recipe__item_game').length !== 0) {
           removeElementsByClass('slottt-machine-recipe__item_game');
         }
@@ -250,8 +254,16 @@ function getMarkets() {
         }
         
         setLoading(1);
+
+        // Set entered bet amount
         setAmount(amountRef.current.value);
         setSportDisplay(sport);
+
+        setSlotContainer_className("slots-container visible fade-out");
+        setCompleted(0)
+        setInterval(() => setCompleted(completed + 100), 10);
+
+        // API Call
         axios({
           method: 'get',
           url: baseUrl + `/v4/sports/${sport}/odds/?apiKey=${process.env.REACT_APP_ODDS_API_KEY}&regions=us&markets=${getMarkets().toString()}&oddsFormat=american`,
@@ -260,8 +272,11 @@ function getMarkets() {
             game_randNum = (Math.floor(Math.random() * res.data.length));
             market_randNum = (Math.floor(Math.random() * res.data[game_randNum].bookmakers[book.index].markets.length));
             outcome_randNum = (Math.floor(Math.random() * res.data[game_randNum].bookmakers[book.index].markets[market_randNum].outcomes.length));
+            
             setLoading(0);
+            
 
+            // Set arrays
             var gameArray = res.data.map(function(game) {
               return `${game.away_team} at ${game.home_team}`;
             });
@@ -274,6 +289,7 @@ function getMarkets() {
               return `${outcome.name}`;
             });
 
+            // Determine if a specific game was selected from the dropdown
             if (gameItem.index === -1){
               setGame(res.data[game_randNum]);
               spinGame(gameArray, game_randNum);
@@ -288,11 +304,10 @@ function getMarkets() {
                 return `${outcome.name}`;
               });
             }
+
+            // Spin slot machine animation
             spinMarket(marketArray, market_randNum);
             spinOutcome(outcomeArray, outcome_randNum);
-
-            // var d = document.getElementsByClassName("bet-container");
-            // setTimeout(d.classList.add("fade-in"), 2000);
         })
         .catch(function() {
           setError("Unable to generate bet");
@@ -311,6 +326,7 @@ function getMarkets() {
       }
     }
 
+  // Sport radio buttons
   const handleChange = e => {
     var sport_radio = e.target.value;
     setSport(e.target.value);
@@ -333,6 +349,7 @@ function getMarkets() {
     });
   };
 
+  // Bet type checkboxes
   const handleMLSelect = e => {  
       if ($('#moneyline').is(":checked")) {
         setMoneyline(e.target.value);
@@ -485,12 +502,9 @@ function getMarkets() {
                     </Form>
                 </Card.Body>
             </div>
-            {loading===1 && 
-            <div>
-              <div>Generating Bet...</div>
-            </div>}
+            {loading === 1 && <ProgressBar height="5px" isLabelVisible={false} bgColor="#cc0000" completed={completed}/> }
             <div className="wrapper">
-              <div className="slots-container fade-out visible">
+              <div className={slotContainer_className}>
                 <div className="slottt-machine-recipe_game">
                   <div className="slottt-machine-recipe__mask_game  slot-container" id="wordbox">
                     <div className="slottt-machine-recipe__items_container_game recipe_if" id="slot_items_list"></div>
